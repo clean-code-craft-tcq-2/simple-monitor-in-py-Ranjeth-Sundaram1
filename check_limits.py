@@ -4,21 +4,18 @@ def DefineParametersRange():
     parameter_range['soc']          = {'min' : 20, 'max' : 80}
     parameter_range['charge_rate']  = {'max' : 0.8}
     return parameter_range
-    
-def DefineParametersMinLimit():
-    min_temperature = 0
 
-def TemperatureIsOK(temperature_range, temperature:float)->bool:
-    if temperature < temperature_range['min'] or temperature > temperature_range['max']:
-        print('Temperature is out of range!')
-        return False
-    return True
+def TemperatureIsOK(temperature_range, temperature:float)->bool:   
+    if temperature in range(temperature_range['min'], temperature_range['max'], ):
+        return True
+    print('Temperature is out of range!')
+    return False
 
 def SocIsOK(soc_range, soc:float)->bool:
-    if soc < soc_range['min'] or soc > soc_range['max']:
-        print('State of Charge is out of range!')
-        return False
-    return True
+    if soc in range (soc_range['min'], soc_range['max'], ):
+       return True
+    print('State of Charge is out of range!')
+    return False
 
 def ChargerateIsOK(charge_rate_range, charge_rate:float)->bool:
     if charge_rate > charge_rate_range['max']:
