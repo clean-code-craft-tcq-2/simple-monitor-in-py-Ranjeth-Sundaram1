@@ -27,7 +27,8 @@ def ChargerateIsOK(charge_rate_range, charge_rate:float)->bool:
     return True
 
 def IsBatteryOK(Parameter_range, temperature, soc, charge_rate)->bool:
-    if TemperatureIsOK(Parameter_range['temperature'], temperature) and SocIsOK(Parameter_range['soc'], soc) and ChargerateIsOK(Parameter_range['charge_rate'], charge_rate):
+    battery_status_report = [TemperatureIsOK(Parameter_range['temperature'], temperature), SocIsOK(Parameter_range['soc'], soc), ChargerateIsOK(Parameter_range['charge_rate'], charge_rate)]
+    if all(battery_status_report) is True:
         return True
     else:
         return False
