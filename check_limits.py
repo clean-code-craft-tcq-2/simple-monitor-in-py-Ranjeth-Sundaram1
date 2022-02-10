@@ -5,21 +5,18 @@ def DefineParametersRange():
     parameter_range['charge_rate']  = {'max' : 0.8}
     return parameter_range
 
-def TemperatureIsOK(temperature_range, temperature:float)->bool:   
+def TemperatureIsOK(temperature_range, temperature:float)->bool:
     if temperature in range(temperature_range['min'], temperature_range['max'], ):
         return True
-    print('Temperature is out of range!')
     return False
 
 def SocIsOK(soc_range, soc:float)->bool:
     if soc in range (soc_range['min'], soc_range['max'], ):
        return True
-    print('State of Charge is out of range!')
     return False
 
 def ChargerateIsOK(charge_rate_range, charge_rate:float)->bool:
     if charge_rate > charge_rate_range['max']:
-        print('Charge rate is out of range!')
         return False
     return True
 
@@ -30,8 +27,7 @@ def IsBatteryOK(Parameter_range, temperature, soc, charge_rate)->bool:
     else:
         return False
 
-if __name__ == '__main__':
-    Parameter_range = DefineParametersRange()
+def TestBatteryStatus(Parameter_range):
     assert(TemperatureIsOK(Parameter_range['temperature'], 40) is True)
     assert(TemperatureIsOK(Parameter_range['temperature'], 100) is False)
     assert(SocIsOK(Parameter_range['soc'], 10) is False)
@@ -42,3 +38,7 @@ if __name__ == '__main__':
     assert(IsBatteryOK(Parameter_range, 50, 85, 0) is False)
     assert(IsBatteryOK(Parameter_range, -50, 85, 0) is False)
     assert(IsBatteryOK(Parameter_range, -50, 85, 0.9) is False)
+    
+if __name__ == '__main__':
+    Parameter_range = DefineParametersRange()
+    TestBatteryStatus(Parameter_range)
