@@ -1,9 +1,9 @@
 def DefineParametersInfo():
     global defined_parameters_info
     defined_parameters_info ={}
-    defined_parameters_info['Temperature']  = {'min' : 0, 'max' : 45, 'tolarance_in_percentage': 5}
-    defined_parameters_info['Soc']          = {'min' : 20, 'max' : 80, 'tolarance_in_percentage': 5}
-    defined_parameters_info['Charge Rate']  = {'trend_value' : 0.8, 'tolarance_in_percentage': 5}
+    defined_parameters_info['Temperature']  = {'min' : 0, 'max' : 45, 'tolarance_in_percentage': 5, 'alert': True}
+    defined_parameters_info['Soc']          = {'min' : 20, 'max' : 80, 'tolarance_in_percentage': 5, 'alert': True}
+    defined_parameters_info['Charge Rate']  = {'trend_value' : 0.8, 'tolarance_in_percentage': 5, 'alert': False}
     return defined_parameters_info
 
 def DefineAlertMessages():
@@ -52,16 +52,22 @@ def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages)->bool
             battery_status_report = IsParameterInTrend(parameter, parameter_value, parameters_info[parameter], alert_messages)
         else:
             battery_status_report = IsParameterInRange(parameter, parameter_value, parameters_info[parameter], alert_messages)
+            
         if battery_status_report == False:
-            return False
+            return False    
         else:
-            IsMinimumTolarenceCheckOK(parameter, parameter_value, parameters_info[parameter],alert_messages)
-            IsMaximumTolarenceCheckOK(parameter, parameter_value, parameters_info[parameter],alert_messages)
+            if parameters_info[parameter]["alert"] == True:
+                IsMinimumTolarenceCheckOK(parameter, parameter_value, parameters_info[parameter],alert_messages)
+                IsMaximumTolarenceCheckOK(parameter, parameter_value, parameters_info[parameter],alert_messages)
+            else:
+                pass
     return True
 
-def TestBatteryStatus(alert_messages, parameters_info):
+def TestBatteryStatus(alert_messages):
     parameters_info =  DefineParametersInfo()
-    assert(IsParameterInRange("Temperature", 40, parameters_info["Temperature"], alert_messages))
+    assert(IsParameterInRange("Temperature", 40, parameters_info["Temperature"], alert_messages) == True)
+    assert(IsParameterInRange("Soc", 100, parameters_info["Soc"], alert_messages) == False)
+    assert(IsBatteryOK({"Charge Rate": 1}, parameters_info, alert_messages)==False)
 
 if __name__ == '__main__':
     alert_messages = DefineAlertMessagesForLanguage("English")
