@@ -52,17 +52,21 @@ def GenerateAlertMessage(parameter, parameter_value, parameter_info,alert_messag
     else:
         pass
 
+def IsBatteryParameterOK(parameter, parameter_value, parameter_info, alert_messages):
+    if "trend_value" in parameter_info.keys():
+        battery_status_report = IsParameterInTrend(parameter, parameter_value, parameter_info, alert_messages)
+    else:
+        battery_status_report = IsParameterInRange(parameter, parameter_value, parameter_info, alert_messages)
+    return battery_status_report
+
 def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages)->bool:
-    battery_status_report = True
+    battery_status_report = []
     for parameter, parameter_value in InputParameterFromSensor.items():
         GenerateAlertMessage(parameter, parameter_value, parameters_info[parameter], alert_messages)
-        if "trend_value" in parameters_info[parameter].keys():
-            battery_status_report = IsParameterInTrend(parameter, parameter_value, parameters_info[parameter], alert_messages)
-        else:
-            battery_status_report = IsParameterInRange(parameter, parameter_value, parameters_info[parameter], alert_messages)
-        if battery_status_report == False:
-            return False    
-    return True
+        battery_status_report.append(IsBatteryParameterOK(parameter, parameter_value, parameters_info[parameter], alert_messages))
+        if all(battery_status_report) is True:
+            return True    
+    return False
 
 def TestBatteryStatus(alert_messages):
     parameters_info =  DefineParametersInfo()
