@@ -46,16 +46,16 @@ def PrintAlertInConsole(parameter, alert_message):
     print (f"{parameter} {alert_message}")
 
 def GenerateAlertMessage(parameter, parameter_value, parameter_info,alert_messages):
-    if parameter_info[parameter]["alert"] == True:
-        IsMinimumTolarenceCheckOK(parameter, parameter_value, parameter_info[parameter],alert_messages)
-        IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info[parameter],alert_messages)  
+    if parameter_info["alert"] == True:
+        IsMinimumTolarenceCheckOK(parameter, parameter_value, parameter_info,alert_messages)
+        IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info,alert_messages)  
     else:
         pass
 
 def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages)->bool:
     battery_status_report = True
     for parameter, parameter_value in InputParameterFromSensor.items():
-        GenerateAlertMessage()
+        GenerateAlertMessage(parameter, parameter_value, parameters_info[parameter], alert_messages)
         if "trend_value" in parameters_info[parameter].keys():
             battery_status_report = IsParameterInTrend(parameter, parameter_value, parameters_info[parameter], alert_messages)
         else:
