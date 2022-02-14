@@ -1,3 +1,5 @@
+import define_defalut_value
+
 def TestBatteryStatus(alert_messages):
     parameters_info =  DefineParametersInfo()
     assert(IsParameterInRange("Temperature", 40, parameters_info["Temperature"], alert_messages) == True)
