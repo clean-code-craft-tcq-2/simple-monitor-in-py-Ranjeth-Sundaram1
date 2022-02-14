@@ -1,7 +1,7 @@
 import alerter
 
 def IsParameterInRange(parameter, parameter_value, parameter_info, alert_messages) -> bool:
-    if parameter_value > parameter_info['min'] and parameter_value < parameter_info['max']:
+    if parameter_value in range( parameter_info['min'], parameter_info['max']):
         return True
     return False
 
@@ -12,7 +12,7 @@ def IsParameterInTrend(parameter, parameter_value, parameter_info, alert_message
 
 def IsMinimumTolarenceCheckOK(parameter,parameter_value, parameter_info,alert_message) -> bool:
     if "min" in parameter_info.keys():
-        if ((parameter_value > float(parameter_info['min'])) and (parameter_value < (parameter_info['min']+parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)))):            
+        if parameter_value in range (parameter_info['min'], int(abs(parameter_info['min']+parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)+1)),):            
             alerter.PrintAlertInConsole(parameter, alert_message[0])
             return True
         return False
@@ -21,7 +21,7 @@ def IsMinimumTolarenceCheckOK(parameter,parameter_value, parameter_info,alert_me
 
 def IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info, alert__message) -> bool:
     if "max" in parameter_info.keys():
-        if parameter_value > (parameter_info['max']-parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)) and parameter_value < float(parameter_info['max']):
+        if abs(parameter_value) in range (int(abs(parameter_info['max']-parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)-1)), parameter_info['max'], ):
             alerter.PrintAlertInConsole(parameter, alert__message[1])
             return True
         return False
@@ -30,7 +30,7 @@ def IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info, alert_
 
 def IsTrendTolaranceCheckOK(parameter, parameter_value, parameter_info, alert__message) -> bool:
     if "trend_value" in parameter_info.keys():
-        if parameter_value > (parameter_info['trend_value']-parameter_info['trend_value']*(parameter_info['tolarance_in_percentage']/100)) and parameter_value < float(parameter_info['trend_value']):
+        if parameter_value > (parameter_info['trend_value']-parameter_info['trend_value']*(parameter_info['tolarance_in_percentage']/100)-1) and parameter_value < float(parameter_info['trend_value']):
             alerter.PrintAlertInConsole(parameter, alert__message[1])
             return True
         return False
@@ -48,7 +48,8 @@ def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages)->bool
     battery_status_report = []
     for parameter, parameter_value in InputParameterFromSensor.items():
         alerter.GenerateAlertMessageIfRequired(parameter, parameter_value, parameters_info[parameter], alert_messages)
-        battery_status_report.append(IsBatteryParameterOK(parameter, parameter_value, parameters_info[parameter], alert_messages))
+        one_param_check_report = IsBatteryParameterOK(parameter, parameter_value, parameters_info[parameter], alert_messages)
+        battery_status_report.append(one_param_check_report)
     if all(battery_status_report) is True:
         return True    
     return False
