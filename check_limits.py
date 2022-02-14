@@ -47,7 +47,7 @@ def IsBatteryParameterOK(parameter, parameter_value, parameter_info, alert_messa
 def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages)->bool:
     battery_status_report = []
     for parameter, parameter_value in InputParameterFromSensor.items():
-        GenerateAlertMessageIfRequired(parameter, parameter_value, parameters_info[parameter], alert_messages)
+        alerter.GenerateAlertMessageIfRequired(parameter, parameter_value, parameters_info[parameter], alert_messages)
         battery_status_report.append(IsBatteryParameterOK(parameter, parameter_value, parameters_info[parameter], alert_messages))
     if all(battery_status_report) is True:
         return True    
