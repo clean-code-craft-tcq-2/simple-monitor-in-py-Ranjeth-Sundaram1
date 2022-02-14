@@ -1,4 +1,5 @@
 import define_defalut_value
+import check_limit
 
 def TestBatteryStatus(alert_messages):
     parameters_info =  DefineParametersInfo()
