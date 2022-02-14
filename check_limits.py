@@ -1,3 +1,5 @@
+import alerter
+
 def IsParameterInRange(parameter, parameter_value, parameter_info, alert_messages) -> bool:
     if parameter_value in range(parameter_info['min'], parameter_info['max'], ):
         return True
@@ -11,18 +13,14 @@ def IsParameterInTrend(parameter, parameter_value, parameter_info, alert_message
 def IsMinimumTolarenceCheckOK(parameter,parameter_value, parameter_info,alert_message) -> bool:
     if parameter_value > float(parameter_info['min']) and parameter_value < (parameter_info['min']+parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)):
         return True
-    PrintAlertInConsole(parameter, alert_message[0])
+    alerter.PrintAlertInConsole(parameter, alert_message[0])
     return False
 
 def IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info, alert__message) -> bool:
     if parameter_value > (parameter_info['max']-parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)) and parameter_value < float(parameter_info['max']):
         return True
-    PrintAlertInConsole(parameter, alert__message[1])
+    alerter.PrintAlertInConsole(parameter, alert__message[1])
     return False
-
-def PrintAlertInConsole(parameter, alert_message):
-    print (f"Warning: {parameter} {alert_message}")
-    return f"Warning: {parameter} {alert_message}"
 
 def GenerateAlertMessage(parameter, parameter_value, parameter_info,alert_messages):
     if parameter_info["alert"] == True:
