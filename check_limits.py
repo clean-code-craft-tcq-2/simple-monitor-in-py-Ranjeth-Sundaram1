@@ -45,7 +45,7 @@ def IsBatteryParameterOK(parameter, parameter_value, parameter_info, alert_messa
         battery_status_report = IsParameterInRange(parameter, parameter_value, parameter_info, alert_messages)
     return battery_status_report
 
-def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages)->bool:
+def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages) -> bool:
     battery_status_report = []
     for parameter, parameter_value in InputParameterFromSensor.items():
         alerter.GenerateAlertMessageIfRequired(parameter, parameter_value, parameters_info[parameter], alert_messages)
