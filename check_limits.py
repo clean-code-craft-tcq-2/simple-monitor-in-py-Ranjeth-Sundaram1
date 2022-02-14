@@ -1,39 +1,42 @@
 import alerter
 
-def IsParameterInRange(parameter, parameter_value, parameter_info, alert_messages) -> bool:
+def IsParameterInRange(parameter, parameter_value, parameter_info, alert_message) -> bool:
     if parameter_value in range( parameter_info['min'], parameter_info['max']):
         return True
+    alerter.PrintWarningInConsole(False,parameter, alert_message[2])
     return False
 
-def IsParameterInTrend(parameter, parameter_value, parameter_info, alert_messages) -> bool:
+def IsParameterInTrend(parameter, parameter_value, parameter_info, alert_message) -> bool:
     if parameter_value < parameter_info['trend_value']:
         return True
+    alerter.PrintWarningInConsole(False, parameter, alert_message[2])
     return False
 
 def IsMinimumTolarenceCheckOK(parameter,parameter_value, parameter_info,alert_message) -> bool:
     if "min" in parameter_info.keys():
-        if parameter_value in range (parameter_info['min'], int(abs(parameter_info['min']+parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)+1)),):            
-            alerter.PrintAlertInConsole(parameter, alert_message[0])
-            return True
+        if parameter_value < (parameter_info['min']+parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)):            
+            param_in_limit = IsParameterInRange(parameter, parameter_value, parameter_info, alert_message)
+            alerter.PrintWarningInConsole(param_in_limit, parameter, alert_message[0])
+            return param_in_limit
         return False
     else: 
         pass
 
-def IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info, alert__message) -> bool:
-    if "max" in parameter_info.keys():
-        if abs(parameter_value) in range (int(abs(parameter_info['max']-parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)-1)), parameter_info['max'], ):
-            alerter.PrintAlertInConsole(parameter, alert__message[1])
-            return True
-        return False
+def IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info, alert_message) -> bool:
+    if "max" in parameter_info.keys():    
+        if parameter_value > parameter_info['max']-parameter_info['max']*(parameter_info['tolarance_in_percentage']/100):
+            param_in_limit = IsParameterInRange(parameter, parameter_value, parameter_info, alert_message)
+            alerter.PrintWarningInConsole(param_in_limit, parameter, alert_message[1])
+            return  param_in_limit   
     else:
         pass
 
-def IsTrendTolaranceCheckOK(parameter, parameter_value, parameter_info, alert__message) -> bool:
+def IsTrendTolaranceCheckOK(parameter, parameter_value, parameter_info, alert_message) -> bool:
     if "trend_value" in parameter_info.keys():
-        if parameter_value > (parameter_info['trend_value']-parameter_info['trend_value']*(parameter_info['tolarance_in_percentage']/100)-1) and parameter_value < float(parameter_info['trend_value']):
-            alerter.PrintAlertInConsole(parameter, alert__message[1])
-            return True
-        return False
+        if  parameter_value > (parameter_info['trend_value']-parameter_info['trend_value']*(parameter_info['tolarance_in_percentage']/100)-1):
+            param_in_limit = IsParameterInTrend(parameter, parameter_value, parameter_info, alert_messages)
+            alerter.PrintWarningInConsole(param_in_limit, parameter, alert_message[1])
+            return  param_in_limit   
     else:
         pass
 
