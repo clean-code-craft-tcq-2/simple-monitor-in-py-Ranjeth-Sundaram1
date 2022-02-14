@@ -1,18 +1,56 @@
+import alerter
 
-def battery_is_ok(temperature, soc, charge_rate):
-  if temperature < 0 or temperature > 45:
-    print('Temperature is out of range!')
-    return False
-  elif soc < 20 or soc > 80:
-    print('State of Charge is out of range!')
-    return False
-  elif charge_rate > 0.8:
-    print('Charge rate is out of range!')
+def IsParameterInRange(parameter, parameter_value, parameter_info, alert_message) -> bool:
+    if parameter_value in range( parameter_info['min'], parameter_info['max']):
+        return True
     return False
 
-  return True
+def IsParameterInTrend(parameter, parameter_value, parameter_info, alert_message) -> bool:
+    if parameter_value < parameter_info['trend_value']:
+        return True
+    return False
 
+def IsMinimumTolarenceCheckOK(parameter,parameter_value, parameter_info,alert_message) -> bool:
+    if "min" in parameter_info.keys():
+        if parameter_value < (parameter_info['min']+parameter_info['max']*(parameter_info['tolarance_in_percentage']/100)):
+            param_in_limit = IsParameterInRange(parameter, parameter_value, parameter_info, alert_message)
+            alerter.PrintWarningInConsole(param_in_limit, parameter, alert_message[0])
+            return param_in_limit
+        return False
+    else:
+        pass
 
-if __name__ == '__main__':
-  assert(battery_is_ok(25, 70, 0.7) is True)
-  assert(battery_is_ok(50, 85, 0) is False)
+def IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info, alert_message) -> bool:
+    if "max" in parameter_info.keys():
+        if parameter_value > parameter_info['max']-parameter_info['max']*(parameter_info['tolarance_in_percentage']/100):
+            param_in_limit = IsParameterInRange(parameter, parameter_value, parameter_info, alert_message)
+            alerter.PrintWarningInConsole(param_in_limit, parameter, alert_message[1])
+            return  param_in_limit
+    else:
+        pass
+
+def IsTrendTolaranceCheckOK(parameter, parameter_value, parameter_info, alert_message) -> bool:
+    if "trend_value" in parameter_info.keys():
+        if  parameter_value > (parameter_info['trend_value']-parameter_info['trend_value']*(parameter_info['tolarance_in_percentage']/100)-1):
+            param_in_limit = IsParameterInTrend(parameter, parameter_value, parameter_info, alert_message)
+            alerter.PrintWarningInConsole(param_in_limit, parameter, alert_message[1])
+            return  param_in_limit
+    else:
+        pass
+
+def IsBatteryParameterOK(parameter, parameter_value, parameter_info, alert_messages):
+    if "trend_value" in parameter_info.keys():
+        battery_status_report = IsParameterInTrend(parameter, parameter_value, parameter_info, alert_messages)
+    else:
+        battery_status_report = IsParameterInRange(parameter, parameter_value, parameter_info, alert_messages)
+    return battery_status_report
+
+def IsBatteryOK(InputParameterFromSensor, parameters_info, alert_messages) -> bool:
+    battery_status_report = []
+    for parameter, parameter_value in InputParameterFromSensor.items():
+        alerter.GenerateAlertMessageIfRequired(parameter, parameter_value, parameters_info[parameter], alert_messages)
+        one_param_check_report = IsBatteryParameterOK(parameter, parameter_value, parameters_info[parameter], alert_messages)
+        battery_status_report.append(one_param_check_report)
+    if all(battery_status_report) is True:
+        return True
+    return False
