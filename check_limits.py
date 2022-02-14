@@ -3,13 +3,11 @@ import alerter
 def IsParameterInRange(parameter, parameter_value, parameter_info, alert_message) -> bool:
     if parameter_value in range( parameter_info['min'], parameter_info['max']):
         return True
-    alerter.PrintWarningInConsole(False,parameter, alert_message[2])
     return False
 
 def IsParameterInTrend(parameter, parameter_value, parameter_info, alert_message) -> bool:
     if parameter_value < parameter_info['trend_value']:
         return True
-    alerter.PrintWarningInConsole(False, parameter, alert_message[2])
     return False
 
 def IsMinimumTolarenceCheckOK(parameter,parameter_value, parameter_info,alert_message) -> bool:
@@ -34,7 +32,7 @@ def IsMaximumTolarenceCheckOK(parameter, parameter_value, parameter_info, alert_
 def IsTrendTolaranceCheckOK(parameter, parameter_value, parameter_info, alert_message) -> bool:
     if "trend_value" in parameter_info.keys():
         if  parameter_value > (parameter_info['trend_value']-parameter_info['trend_value']*(parameter_info['tolarance_in_percentage']/100)-1):
-            param_in_limit = IsParameterInTrend(parameter, parameter_value, parameter_info, alert_messages)
+            param_in_limit = IsParameterInTrend(parameter, parameter_value, parameter_info, alert_message)
             alerter.PrintWarningInConsole(param_in_limit, parameter, alert_message[1])
             return  param_in_limit   
     else:
